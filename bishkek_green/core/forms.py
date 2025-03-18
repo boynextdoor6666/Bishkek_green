@@ -1,6 +1,9 @@
 from django import forms
 from .models import PlantingRequest, Donation, TreeType
 
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
 
 class PlantingRequestForm(forms.ModelForm):
     class Meta:
@@ -56,3 +59,24 @@ class ContactForm(forms.Form):
         'rows': 4,
         'placeholder': 'Ваше сообщение'
     }))
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget = forms.HiddenInput()
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500'
+
+        def save(self, commit=True):
+            user = super().save(commit=False)
+            # Генерируем username на основе email
+            user.username = self.cleaned_data['email'].split('@')[0]  # Используем часть email до @
+            if commit:
+                user.save()
+            return user

@@ -3,20 +3,19 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db import models
-
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from .models import GreenLocation, PlantingRequest, TreeType, GalleryImage, Donation
-from .forms import PlantingRequestForm, DonationForm, ContactForm
+from .forms import PlantingRequestForm, DonationForm, ContactForm, RegistrationForm
+import logging
 
 
 def index(request):
     """Главная страница"""
-    # Получаем статистику
     total_locations = GreenLocation.objects.count()
     total_trees = GreenLocation.objects.aggregate(sum=models.Sum('trees_planted'))['sum'] or 0
     featured_locations = GreenLocation.objects.filter(is_featured=True)[:3]
     recent_plantings = GreenLocation.objects.filter(status='completed').order_by('-updated_at')[:3]
-
-    # Получаем несколько фотографий для слайдера
     featured_images = GalleryImage.objects.filter(is_featured=True)[:5]
 
     context = {
@@ -39,16 +38,16 @@ def green_map(request):
     return render(request, 'map.html', context)
 
 
+@login_required(login_url='/accounts/login/')  # Используйте полный путь
 def planting_request(request):
-    """Страница с формой заявки на посадку"""
     if request.method == 'POST':
         form = PlantingRequestForm(request.POST)
         if form.is_valid():
-            # Если переданы координаты с карты, сохраняем их
+            planting_request = form.save(commit=False)
+            planting_request.user = request.user
             lat = request.POST.get('hidden_lat')
             lng = request.POST.get('hidden_lng')
 
-            planting_request = form.save(commit=False)
             if lat and lng:
                 planting_request.latitude = float(lat)
                 planting_request.longitude = float(lng)
@@ -77,7 +76,6 @@ def donate(request):
     else:
         form = DonationForm()
 
-    # Получаем недавних спонсоров, исключая анонимные
     recent_donors = Donation.objects.filter(is_anonymous=False).order_by('-created_at')[:5]
 
     context = {
@@ -101,7 +99,6 @@ def contact(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            # В реальном проекте здесь будет отправка email
             messages.success(request, 'Ваше сообщение успешно отправлено!')
             return redirect('core:success')
     else:
@@ -116,8 +113,6 @@ def contact(request):
 def gallery(request):
     """Галерея проекта"""
     images = GalleryImage.objects.all().order_by('-upload_date')
-
-    # Пагинация для галереи
     paginator = Paginator(images, 12)  # 12 изображений на страницу
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -133,7 +128,6 @@ def success(request):
     return render(request, 'success.html')
 
 
-# API для карты
 def locations_json(request):
     """API для получения всех локаций для карты"""
     locations = GreenLocation.objects.all()
@@ -169,3 +163,23 @@ def requests_json(request):
         })
 
     return JsonResponse({'requests': data})
+
+
+logger = logging.getLogger(__name__)
+def register(request):
+    """Регистрация пользователя"""
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            logger.info(f'User {user.username} registered successfully.')
+            login(request, user)
+            messages.success(request, 'Регистрация прошла успешно!')
+            return redirect('core:index')
+        else:
+            logger.error(f'Form errors: {form.errors}')  # Логирование ошибок формы
+            messages.error(request, 'Ошибка при регистрации. Проверьте введенные данные.')
+    else:
+        form = RegistrationForm()
+
+    return render(request, 'registration/register.html', {'form': form})

@@ -107,3 +107,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = "tailwind"
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',  # Логирование в консоль
+        },
+        'file': {
+            'class': 'logging.FileHandler',  # Логирование в файл
+            'filename': 'debug.log',  # Имя файла для логов
+        },
+    },
+    'loggers': {
+        '': {  # Корневой логгер
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',  # Уровень логирования
+            'propagate': True,
+        },
+    },
+}

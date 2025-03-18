@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход - Зелёный Бишкек{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-md">
+        <h1 class="text-3xl font-bold text-primary mb-6 text-center">Вход</h1>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+                <p class="text-red-600">Неверная электронная почта или пароль.</p>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="form-label" for="email">Электронная почта</label>
+                <input type="email" id="email" name="username" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">Пароль</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn-primary w-full py-3">Войти</button>
+            </div>
+        </form>
+
+        <div class="mt-4 text-center">
+            <p class="text-gray-600">Нет аккаунта?
+                <a href="{% url 'core:register' %}" class="text-primary hover:underline">Зарегистрируйтесь</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
