@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация - Зелёный Бишкек{% endblock %}
+
+{% block content %}
+<section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4 max-w-2xl">
+        <h1 class="text-3xl font-bold text-primary mb-4">Регистрация волонтёра</h1>
+        <p class="text-gray-600 mb-6">Присоединяйтесь к сообществу "Зелёный Бишкек" и участвуйте в озеленении города.</p>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <!-- Вывод общих ошибок формы -->
+                {% if form.non_field_errors %}
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-red-600">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Выбор типа регистрации -->
+                <div class="form-group mb-4">
+                    <label class="form-label">Тип регистрации</label>
+                    {{ form.user_type }}
+                    {% for error in form.user_type.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Базовые поля -->
+                <div class="form-group mb-4">
+                    <label class="form-label">Email</label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="form-label">Пароль</label>
+                    {{ form.password1 }}
+                    {% for error in form.password1.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group mb-6">
+                    <label class="form-label">Подтверждение пароля</label>
+                    {{ form.password2 }}
+                    {% for error in form.password2.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Индивидуальная регистрация -->
+                <div id="individual_fields" class="conditional-fields" style="display: none;">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Имя</label>
+                        {{ form.first_name }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">Фамилия</label>
+                        {{ form.last_name }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">Телефон</label>
+                        {{ form.phone }}
+                    </div>
+                </div>
+
+                <!-- Регистрация команды -->
+                <div id="team_fields" class="conditional-fields" style="display: none;">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Название команды</label>
+                        {{ form.team_name }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">Описание команды</label>
+                        {{ form.team_description }}
+                    </div>
+                </div>
+
+                <!-- Регистрация компании -->
+                <div id="company_fields" class="conditional-fields" style="display: none;">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Название компании</label>
+                        {{ form.company_name }}
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label">Юридический адрес</label>
+                        {{ form.company_address }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-primary w-full py-3">
+                        Зарегистрироваться
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Управление видимостью полей
+                const userType = document.getElementById('id_user_type');
+                const toggleFields = () => {
+                    document.querySelectorAll('.conditional-fields').forEach(f => f.style.display = 'none');
+                    document.getElementById(`${userType.value}_fields`)?.style.display = 'block';
+                };
+
+                userType.addEventListener('change', toggleFields);
+                toggleFields(); // Инициализация при загрузке
+
+                // Валидация паролей
+                const password1 = document.getElementById('id_password1');
+                const password2 = document.getElementById('id_password2');
+
+                function validatePasswords() {
+                    if (password1.value !== password2.value) {
+                        password2.setCustomValidity('Пароли не совпадают');
+                    } else {
+                        password2.setCustomValidity('');
+                    }
+                }
+
+                password1.addEventListener('input', validatePasswords);
+                password2.addEventListener('input', validatePasswords);
+            });
+
+            {% if user.is_authenticated %}
+    <a href="{% url 'logout' %}" class="hover:text-light-green">Выйти</a>
+{% else %}
+    <a href="{% url 'login' %}" class="hover:text-light-green">Войти</a>
+    <a href="{% url 'core:register' %}" class="hover:text-light-green">Регистрация</a>
+{% endif %}
+        </script>
+    </div>
+</section>
+{% endblock %}
