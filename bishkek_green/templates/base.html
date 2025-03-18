@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Зелёный Бишкек{% endblock %}</title>
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,12 +20,9 @@
             }
         }
     </script>
-
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
     {% block extra_css %}{% endblock %}
-
     <style>
         .bg-hero {
             background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('media/green.jpg');
@@ -42,11 +38,8 @@
             <div class="flex justify-between items-center">
                 <a href="{% url 'core:index' %}" class="flex items-center space-x-2">
                    <img src="media/plnt.png" alt="">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </img>
                     <span class="text-xl font-bold">Зелёный Бишкек</span>
                 </a>
-
                 <!-- Mobile menu button -->
                 <div class="md:hidden" x-data="{ open: false }">
                     <button @click="open = !open" class="text-white focus:outline-none">
@@ -55,7 +48,6 @@
                             <path x-show="open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-
                     <!-- Mobile menu -->
                     <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                         <a href="{% url 'core:index' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Главная</a>
@@ -67,49 +59,28 @@
                         <a href="{% url 'core:contact' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Контакты</a>
                     </div>
                 </div>
-
                 <!-- Desktop menu -->
-              <nav class="hidden md:flex space-x-6">
-    <a href="{% url 'core:index' %}" class="hover:text-light-green">Главная</a>
-    <a href="{% url 'core:map' %}" class="hover:text-light-green">Карта</a>
-    <a href="{% url 'core:planting_request' %}" class="hover:text-light-green">Подать заявку</a>
-    <a href="{% url 'core:donate' %}" class="hover:text-light-green">Поддержать</a>
-    <a href="{% url 'core:gallery' %}" class="hover:text-light-green">Галерея</a>
-    <a href="{% url 'core:about' %}" class="hover:text-light-green">О проекте</a>
-    <a href="{% url 'core:contact' %}" class="hover:text-light-green">Контакты</a>
-
-{% if user.is_authenticated %}
-    <form action="{% url 'core:logout' %}" method="POST" style="display: inline;">
-        {% csrf_token %}
-        <button type="submit" class="hover:text-light-green" onclick="confirmLogout">Выйти</button>
-    </form>
-{% else %}
-    <a href="{% url 'core:login' %}" class="hover:text-light-green">Войти</a>
-    <a href="{% url 'core:register' %}" class="hover:text-light-green">Регистрация</a>
-{% endif %}
-                  <script>
-    function confirmLogout() {
-        Swal.fire({
-            title: 'Вы уверены?',
-            text: "Вы действительно хотите выйти из системы?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#2D6A4F',  // Цвет кнопки подтверждения
-            cancelButtonColor: '#d33',      // Цвет кнопки отмены
-            confirmButtonText: 'Да, выйти',
-            cancelButtonText: 'Отмена'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('logout-form').submit();  // Отправка формы
-            }
-        });
-    }
-</script>
-</nav>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="{% url 'core:index' %}" class="hover:text-light-green">Главная</a>
+                    <a href="{% url 'core:map' %}" class="hover:text-light-green">Карта</a>
+                    <a href="{% url 'core:planting_request' %}" class="hover:text-light-green">Подать заявку</a>
+                    <a href="{% url 'core:donate' %}" class="hover:text-light-green">Поддержать</a>
+                    <a href="{% url 'core:gallery' %}" class="hover:text-light-green">Галерея</a>
+                    <a href="{% url 'core:about' %}" class="hover:text-light-green">О проекте</a>
+                    <a href="{% url 'core:contact' %}" class="hover:text-light-green">Контакты</a>
+                    {% if user.is_authenticated %}
+                        <form id="logout-form" action="{% url 'core:logout' %}" method="POST" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="hover:text-light-green" onclick="confirmLogout(event)">Выйти</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'core:login' %}" class="hover:text-light-green">Войти</a>
+                        <a href="{% url 'core:register' %}" class="hover:text-light-green">Регистрация</a>
+                    {% endif %}
+                </nav>
             </div>
         </div>
     </header>
-
     <!-- Flash messages -->
     {% if messages %}
     <div class="container mx-auto px-4 py-2">
@@ -120,12 +91,10 @@
         {% endfor %}
     </div>
     {% endif %}
-
     <!-- Main content -->
     <main class="flex-grow">
         {% block content %}{% endblock %}
     </main>
-
     <!-- Footer -->
     <footer class="bg-dark-green text-white mt-8">
         <div class="container mx-auto px-4 py-8">
@@ -195,6 +164,25 @@
     </footer>
 
     {% block extra_js %}{% endblock %}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault(); // Предотвращаем отправку формы
+            Swal.fire({
+                title: 'Вы уверены?',
+                text: "Вы действительно хотите выйти из системы?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2D6A4F',  // Цвет кнопки подтверждения
+                cancelButtonColor: '#d33',      // Цвет кнопки отмены
+                confirmButtonText: 'Да, выйти',
+                cancelButtonText: 'Отмена'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();  // Отправка формы
+                }
+            });
+        }
+    </script>
 </body>
 </html>
