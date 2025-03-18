@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class PlantingRequestForm(forms.ModelForm):
     class Meta:
         model = PlantingRequest
-        fields = ['name', 'email', 'phone', 'address', 'description', 'preferred_tree_type']
+        fields = ['name', 'email', 'phone', 'address', 'description', 'preferred_tree_type', 'photo']
         widgets = {
             'description': forms.Textarea(
                 attrs={'rows': 4, 'placeholder': 'Расскажите, почему вы хотите озеленить это место?'}),

@@ -1,0 +1,19 @@
+<!-- templates/emails/planting_request_email.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая заявка на озеленение</title>
+</head>
+<body>
+    <h2>Новая заявка на озеленение</h2>
+    <p><strong>Имя:</strong> {{ name }}</p>
+    <p><strong>Email:</strong> {{ email }}</p>
+    <p><strong>Телефон:</strong> {{ phone }}</p>
+    <p><strong>Адрес:</strong> {{ address }}</p>
+    <p><strong>Описание:</strong> {{ description }}</p>
+    <p><strong>Координаты:</strong> {{ latitude }}, {{ longitude }}</p>
+    <p><strong>Ссылка на 2GIS:</strong> <a href="{{ 2gis_link }}">Открыть в 2GIS</a></p>
+</body>
+</html>

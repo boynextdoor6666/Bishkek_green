@@ -93,3 +93,96 @@ Not Found: /accounts/register/media/plnt.png
 User Aidar registered successfully.
 Not Found: /accounts/login/media/plnt.png
 Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/register/media/plnt.png
+Form errors: <ul class="errorlist"><li>email<ul class="errorlist"><li>¬ведите правильный адрес электронной почты.</li></ul></li></ul>
+Not Found: /accounts/register/media/plnt.png
+Form errors: <ul class="errorlist"><li>password2<ul class="errorlist"><li>¬ведЄнный пароль слишком похож на адрес электронной почты.</li></ul></li></ul>
+Not Found: /accounts/register/media/plnt.png
+Form errors: <ul class="errorlist"><li>password2<ul class="errorlist"><li>¬ведЄнный пароль слишком похож на адрес электронной почты.</li></ul></li></ul>
+Not Found: /accounts/register/media/plnt.png
+User Islam registered successfully.
+Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/register/media/plnt.png
+Not Found: /accounts/register/media/plnt.png
+User lesha registered successfully.
+Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/login/media/plnt.png
+Not Found: /accounts/login/media/plnt.png
+Not Found: /request/media/plnt.png
+C:\Users\user\PycharmProjects\b\bishkek_green\bishkek_green\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\core\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\core\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\core\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png
+C:\Users\user\PycharmProjects\b\bishkek_green\core\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\core\forms.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /request/media/plnt.png
+C:\Users\user\PycharmProjects\b\bishkek_green\core\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\bishkek_green\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\user\PycharmProjects\b\bishkek_green\core\views.py changed, reloading.
+Watching for file changes with StatReloader
+Importing BlpImagePlugin
+Importing BmpImagePlugin
+Importing BufrStubImagePlugin
+Importing CurImagePlugin
+Importing DcxImagePlugin
+Importing DdsImagePlugin
+Importing EpsImagePlugin
+Importing FitsImagePlugin
+Importing FliImagePlugin
+Importing FpxImagePlugin
+Image: failed to import FpxImagePlugin: No module named 'olefile'
+Importing FtexImagePlugin
+Importing GbrImagePlugin
+Importing GifImagePlugin
+Importing GribStubImagePlugin
+Importing Hdf5StubImagePlugin
+Importing IcnsImagePlugin
+Importing IcoImagePlugin
+Importing ImImagePlugin
+Importing ImtImagePlugin
+Importing IptcImagePlugin
+Importing JpegImagePlugin
+Importing Jpeg2KImagePlugin
+Importing McIdasImagePlugin
+Importing MicImagePlugin
+Image: failed to import MicImagePlugin: No module named 'olefile'
+Importing MpegImagePlugin
+Importing MpoImagePlugin
+Importing MspImagePlugin
+Importing PalmImagePlugin
+Importing PcdImagePlugin
+Importing PcxImagePlugin
+Importing PdfImagePlugin
+Importing PixarImagePlugin
+Importing PngImagePlugin
+Importing PpmImagePlugin
+Importing PsdImagePlugin
+Importing QoiImagePlugin
+Importing SgiImagePlugin
+Importing SpiderImagePlugin
+Importing SunImagePlugin
+Importing TgaImagePlugin
+Importing TiffImagePlugin
+Importing WebPImagePlugin
+Importing WmfImagePlugin
+Importing XbmImagePlugin
+Importing XpmImagePlugin
+Importing XVThumbImagePlugin
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png
+Not Found: /request/media/plnt.png

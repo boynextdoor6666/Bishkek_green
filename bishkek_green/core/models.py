@@ -40,11 +40,13 @@ class GreenLocation(models.Model):
 
 
 class PlantingRequest(models.Model):
+    photo = models.ImageField(upload_to='planting_requests/', blank=True, null=True)
     STATUS_CHOICES = [
         ('pending', 'На рассмотрении'),
         ('approved', 'Одобрено'),
         ('rejected', 'Отклонено'),
         ('completed', 'Выполнено'),
+
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)  # Связь с пользователем

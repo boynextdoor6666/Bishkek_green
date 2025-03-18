@@ -11,6 +11,10 @@ import logging
 from django.contrib.auth import views as auth_views
 from django.shortcuts import redirect
 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
 class CustomLogoutView(auth_views.LogoutView):
     def dispatch(self, request, *args, **kwargs):
         messages.success(request, 'Вы успешно вышли из системы.')
@@ -49,20 +53,40 @@ def green_map(request):
     return render(request, 'map.html', context)
 
 
-@login_required(login_url='/accounts/login/')  # Используйте полный путь
+@login_required(login_url='/accounts/login/')
 def planting_request(request):
     if request.method == 'POST':
-        form = PlantingRequestForm(request.POST)
+        form = PlantingRequestForm(request.POST, request.FILES)  # Добавьте request.FILES для обработки файлов
         if form.is_valid():
             planting_request = form.save(commit=False)
             planting_request.user = request.user
-            lat = request.POST.get('hidden_lat')
-            lng = request.POST.get('hidden_lng')
+            lat = request.POST.get('lat')
+            lng = request.POST.get('lng')
 
             if lat and lng:
                 planting_request.latitude = float(lat)
                 planting_request.longitude = float(lng)
             planting_request.save()
+
+            # Отправка письма
+            subject = 'Новая заявка на озеленение'
+            context = {
+                'name': planting_request.name,
+                'email': planting_request.email,
+                'phone': planting_request.phone,
+                'address': planting_request.address,
+                'description': planting_request.description,
+                'latitude': planting_request.latitude,
+                'longitude': planting_request.longitude,
+                '2gis_link': f"https://2gis.kg/bishkek/geo/{planting_request.longitude}%2C{planting_request.latitude}",  # Ссылка на 2GIS
+                'photo': planting_request.photo.url if planting_request.photo else None,  # Ссылка на фото, если оно есть
+            }
+            html_message = render_to_string('emails/planting_request_email.html', context)
+            plain_message = strip_tags(html_message)
+            from_email = 'Kadyrbekovaidar19@gmail.com'  # Ваш Gmail
+            to_email = ['Kadyrbekovaidar19@gmail.com']  # Ваш email для получения заявок
+
+            send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 
             messages.success(request, 'Ваша заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.')
             return redirect('core:success')
@@ -74,7 +98,6 @@ def planting_request(request):
         'tree_types': TreeType.objects.all(),
     }
     return render(request, 'submit_location.html', context)
-
 
 def donate(request):
     """Страница пожертвований"""
@@ -180,7 +203,7 @@ logger = logging.getLogger(__name__)
 def register(request):
     """Регистрация пользователя"""
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST, request.FIlES)
         if form.is_valid():
             user = form.save()
             logger.info(f'User {user.username} registered successfully.')

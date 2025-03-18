@@ -65,33 +65,33 @@
         <!-- Контейнер для карты -->
         <div id="requestMap"></div>
 
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="plantingForm">
             {% csrf_token %}
             <input type="hidden" name="lat" id="latInput">
             <input type="hidden" name="lng" id="lngInput">
-            
+
             <div class="form-group">
                 <label class="form-label" for="title">Название места</label>
                 <input type="text" id="title" name="title" class="form-input" required>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="description">Описание</label>
                 <textarea id="description" name="description" class="form-textarea" required></textarea>
                 <p class="text-sm text-gray-500 mt-1">Опишите, почему это место нуждается в озеленении и какие растения вы предлагаете.</p>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="photo">Фотография места (необязательно)</label>
                 <input type="file" id="photo" name="photo" class="form-input">
             </div>
-            
+
             <div class="form-group">
-                <button type="submit" class="btn-primary">Отправить заявку</button>
+                <button type="button" onclick="confirmSubmission()" class="btn-primary">Отправить заявку</button>
             </div>
         </form>
 
-        <!-- JavaScript для инициализации карты -->
+        <!-- JavaScript для инициализации карты и подтверждения отправки -->
         <script>
             // Убедимся, что DOM загружен
             document.addEventListener('DOMContentLoaded', function() {
@@ -109,28 +109,28 @@
 
                     // Создаем маркер, который можно перемещать
                     let marker = null;
-                    
+
                     // Функция для обновления скрытых полей формы
                     function updateCoordinates(lat, lng) {
                         document.getElementById('latInput').value = lat;
                         document.getElementById('lngInput').value = lng;
                     }
-                    
+
                     // Обработчик клика по карте
                     map.on('click', function(e) {
                         // Если маркер уже существует, удаляем его
                         if (marker !== null) {
                             map.removeLayer(marker);
                         }
-                        
+
                         // Создаем новый маркер
                         marker = L.marker(e.latlng, {draggable: true}).addTo(map)
                             .bindPopup('Место для озеленения')
                             .openPopup();
-                            
+
                         // Обновляем координаты при создании маркера
                         updateCoordinates(e.latlng.lat, e.latlng.lng);
-                        
+
                         // Обновляем координаты при перетаскивании маркера
                         marker.on('dragend', function(event) {
                             const position = marker.getLatLng();
@@ -144,6 +144,25 @@
                     document.getElementById('requestMap').innerHTML = 'Ошибка загрузки карты';
                 }
             });
+
+            // Функция для подтверждения отправки формы
+            function confirmSubmission() {
+                Swal.fire({
+                    title: 'Подтвердите отправку',
+                    text: "Вы уверены, что хотите отправить заявку?",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2D6A4F',  // Цвет кнопки подтверждения
+                    cancelButtonColor: '#d33',      // Цвет кнопки отмены
+                    confirmButtonText: 'Да, отправить',
+                    cancelButtonText: 'Отмена'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Если пользователь подтвердил, отправляем форму
+                        document.getElementById('plantingForm').submit();
+                    }
+                });
+            }
         </script>
     </div>
 </section>
