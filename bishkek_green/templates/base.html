@@ -78,12 +78,33 @@
     <a href="{% url 'core:about' %}" class="hover:text-light-green">О проекте</a>
     <a href="{% url 'core:contact' %}" class="hover:text-light-green">Контакты</a>
 
-    {% if user.is_authenticated %}
-        <a href="{% url 'core:logout' %}" class="hover:text-light-green">Выйти</a>
-    {% else %}
-        <a href="{% url 'core:login' %}" class="hover:text-light-green">Войти</a>
-        <a href="{% url 'core:register' %}" class="hover:text-light-green">Регистрация</a>
-    {% endif %}
+{% if user.is_authenticated %}
+    <form action="{% url 'core:logout' %}" method="POST" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="hover:text-light-green" onclick="confirmLogout">Выйти</button>
+    </form>
+{% else %}
+    <a href="{% url 'core:login' %}" class="hover:text-light-green">Войти</a>
+    <a href="{% url 'core:register' %}" class="hover:text-light-green">Регистрация</a>
+{% endif %}
+                  <script>
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Вы уверены?',
+            text: "Вы действительно хотите выйти из системы?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#2D6A4F',  // Цвет кнопки подтверждения
+            cancelButtonColor: '#d33',      // Цвет кнопки отмены
+            confirmButtonText: 'Да, выйти',
+            cancelButtonText: 'Отмена'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logout-form').submit();  // Отправка формы
+            }
+        });
+    }
+</script>
 </nav>
             </div>
         </div>
@@ -174,5 +195,6 @@
     </footer>
 
     {% block extra_js %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>

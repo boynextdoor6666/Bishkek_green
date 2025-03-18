@@ -8,6 +8,17 @@ from django.contrib.auth.decorators import login_required
 from .models import GreenLocation, PlantingRequest, TreeType, GalleryImage, Donation
 from .forms import PlantingRequestForm, DonationForm, ContactForm, RegistrationForm
 import logging
+from django.contrib.auth import views as auth_views
+from django.shortcuts import redirect
+
+class CustomLogoutView(auth_views.LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.success(request, 'Вы успешно вышли из системы.')
+        return super().dispatch(request, *args, **kwargs)
+
+    # Разрешить GET-запросы для выхода
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
 
 
 def index(request):

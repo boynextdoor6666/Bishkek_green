@@ -22,6 +22,7 @@ urlpatterns = [
     # API для карты
     path('api/locations/', views.locations_json, name='locations_json'),
     path('api/requests/', views.requests_json, name='requests_json'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout')
 ]
 
 if settings.DEBUG:

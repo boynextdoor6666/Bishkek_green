@@ -131,3 +131,5 @@ LOGGING = {
         },
     },
 }
+
+LOGOUT_REDIRECT_URL = 'core:index'
