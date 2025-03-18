@@ -12,14 +12,14 @@
 
             {% if form.errors %}
             <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded">
-                <p class="text-red-600">Неверная электронная почта или пароль.</p>
+                <p class="text-red-600">Неверное имя пользователя или пароль.</p>
             </div>
             {% endif %}
 
-            <div class="form-group">
-                <label class="form-label" for="email">Электронная почта</label>
-                <input type="email" id="email" name="email" class="form-input" required>
-            </div>
+         <div class="form-group">
+    <label class="form-label" for="username">Имя пользователя</label>
+    <input type="text" id="username" name="username" class="form-input" required>
+</div>
 
             <div class="form-group">
                 <label class="form-label" for="password">Пароль</label>
