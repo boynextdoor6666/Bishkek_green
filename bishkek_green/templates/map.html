@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}Карта озеленения - Зелёный Бишкек{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-primary mb-4">Карта озеленения Бишкека</h1>
+        <p class="text-gray-600 mb-6">Изучите проекты озеленения в Бишкеке.</p>
+
+        <!-- Включаем Leaflet CSS и JavaScript -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <!-- Стили для карты -->
+        <style>
+            #map {
+                height: 500px;
+                width: 100%;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+            }
+            .legend {
+                background-color: white;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            }
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+            .legend-color {
+                width: 20px;
+                height: 20px;
+                margin-right: 8px;
+                border: 1px solid #999;
+            }
+        </style>
+
+        <!-- Контейнер для карты -->
+        <div id="map"></div>
+
+        <!-- JavaScript для инициализации карты -->
+        <script>
+            // Убедимся, что DOM загружен
+            document.addEventListener('DOMContentLoaded', function() {
+                // Проверяем, что объект L (Leaflet) существует
+                if (typeof L !== 'undefined') {
+                    console.log('Leaflet загружен успешно');
+
+                    // Инициализация карты
+                    const map = L.map('map').setView([42.8746, 74.5698], 12);
+
+                    // Добавление слоя OpenStreetMap
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Добавим тестовый маркер в центр карты
+                    L.marker([42.8746, 74.5698]).addTo(map)
+                        .bindPopup('Центр Бишкека')
+                        .openPopup();
+
+                    // Цвета для разных приоритетов озеленения
+                    const priorityColors = {
+                        'высокий': '#ff4444',    // красный
+                        'средний': '#ffbb33',    // оранжевый
+                        'низкий': '#2ca02c'      // зеленый
+                    };
+
+                    // Пример данных зон для озеленения - замените на ваши реальные данные
+                    const greeningZones = [
+                        {
+                            name: 'Парк Панфилова',
+                            polygon: [
+                                [42.8765, 74.6095],
+                                [42.8780, 74.6115],
+                                [42.8770, 74.6135],
+                                [42.8755, 74.6115]
+                            ],
+                            status: 'нуждается в озеленении',
+                            priority: 'высокий'
+                        },
+                        {
+                            name: 'Территория возле БГУ',
+                            center: [42.8670, 74.5930],
+                            radius: 100, // в метрах
+                            status: 'запланировано озеленение',
+                            priority: 'средний'
+                        },
+                        {
+                            name: 'Сквер Тоголок Молдо',
+                            polygon: [
+                                [42.8700, 74.5800],
+                                [42.8715, 74.5820],
+                                [42.8710, 74.5840],
+                                [42.8695, 74.5825]
+                            ],
+                            status: 'требуется дополнительное озеленение',
+                            priority: 'низкий'
+                        },
+                        {
+                            name: 'Южный берег',
+                            center: [42.8500, 74.5850],
+                            radius: 150, // в метрах
+                            status: 'новый проект озеленения',
+                            priority: 'высокий'
+                        }
+                        // Добавьте другие зоны по необходимости
+                    ];
+
+                    // Отображаем зоны озеленения
+                    greeningZones.forEach(zone => {
+                        const color = priorityColors[zone.priority] || '#2ca02c';
+
+                        if (zone.polygon) {
+                            // Создаем полигон с полупрозрачным цветом
+                            const polygon = L.polygon(zone.polygon, {
+                                color: color,       // цвет границы
+                                fillColor: color,   // цвет заливки
+                                fillOpacity: 0.3,   // прозрачность заливки
+                                weight: 2           // толщина границы
+                            }).addTo(map);
+
+                            // Добавляем всплывающую подсказку с информацией
+                            polygon.bindPopup(`
+                                <strong>${zone.name}</strong><br>
+                                Статус: ${zone.status}<br>
+                                Приоритет: ${zone.priority}
+                            `);
+                        } else if (zone.center && zone.radius) {
+                            // Создаем круг для круглых зон
+                            const circle = L.circle(zone.center, {
+                                radius: zone.radius,
+                                color: color,
+                                fillColor: color,
+                                fillOpacity: 0.3,
+                                weight: 2
+                            }).addTo(map);
+
+                            // Добавляем всплывающую подсказку с информацией
+                            circle.bindPopup(`
+                                <strong>${zone.name}</strong><br>
+                                Статус: ${zone.status}<br>
+                                Приоритет: ${zone.priority}
+                            `);
+                        }
+                    });
+
+                    // Добавление легенды
+                    const legend = L.control({position: 'bottomright'});
+                    legend.onAdd = function(map) {
+                        const div = L.DomUtil.create('div', 'info legend');
+
+                        div.innerHTML = `
+                            <h4 style="margin-top:0; margin-bottom:10px; font-weight:bold;">Приоритеты озеленения</h4>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color:rgba(255,68,68,0.3); border:2px solid #ff4444;"></div>
+                                <span>Высокий приоритет</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color:rgba(255,187,51,0.3); border:2px solid #ffbb33;"></div>
+                                <span>Средний приоритет</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color:rgba(44,160,44,0.3); border:2px solid #2ca02c;"></div>
+                                <span>Низкий приоритет</span>
+                            </div>
+                        `;
+
+                        return div;
+                    };
+                    legend.addTo(map);
+
+                    console.log('Карта инициализирована');
+                } else {
+                    console.error('Leaflet не загружен');
+                    document.getElementById('map').innerHTML = 'Ошибка загрузки карты';
+                }
+            });
+        </script>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Подать заявку на озеленение - Зелёный Бишкек{% endblock %}
+
+{% block content %}
+<!-- Заголовок страницы -->
+<section class="py-8 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-bold text-primary mb-4">Подать заявку на озеленение</h1>
+        <p class="text-gray-600 mb-6">Укажите место, где требуется озеленение в Бишкеке.</p>
+
+        <!-- Включаем Leaflet CSS и JavaScript -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <!-- Стили для карты -->
+        <style>
+            #requestMap {
+                height: 400px;
+                width: 100%;
+                border: 1px solid #ccc;
+                margin-bottom: 20px;
+            }
+            .form-group {
+                margin-bottom: 1.5rem;
+            }
+            .form-label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 500;
+            }
+            .form-input {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #d1d5db;
+                border-radius: 0.375rem;
+            }
+            .form-textarea {
+                width: 100%;
+                padding: 0.5rem;
+                border: 1px solid #d1d5db;
+                border-radius: 0.375rem;
+                min-height: 100px;
+            }
+            .btn-primary {
+                background-color: #10b981;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.375rem;
+                font-weight: 500;
+                cursor: pointer;
+            }
+            .btn-primary:hover {
+                background-color: #059669;
+            }
+        </style>
+
+        <!-- Контейнер для карты -->
+        <div id="requestMap"></div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="lat" id="latInput">
+            <input type="hidden" name="lng" id="lngInput">
+            
+            <div class="form-group">
+                <label class="form-label" for="title">Название места</label>
+                <input type="text" id="title" name="title" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="description">Описание</label>
+                <textarea id="description" name="description" class="form-textarea" required></textarea>
+                <p class="text-sm text-gray-500 mt-1">Опишите, почему это место нуждается в озеленении и какие растения вы предлагаете.</p>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="photo">Фотография места (необязательно)</label>
+                <input type="file" id="photo" name="photo" class="form-input">
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn-primary">Отправить заявку</button>
+            </div>
+        </form>
+
+        <!-- JavaScript для инициализации карты -->
+        <script>
+            // Убедимся, что DOM загружен
+            document.addEventListener('DOMContentLoaded', function() {
+                // Проверяем, что объект L (Leaflet) существует
+                if (typeof L !== 'undefined') {
+                    console.log('Leaflet загружен успешно');
+
+                    // Инициализация карты
+                    const map = L.map('requestMap').setView([42.8746, 74.5698], 12);
+
+                    // Добавление слоя OpenStreetMap
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+
+                    // Создаем маркер, который можно перемещать
+                    let marker = null;
+                    
+                    // Функция для обновления скрытых полей формы
+                    function updateCoordinates(lat, lng) {
+                        document.getElementById('latInput').value = lat;
+                        document.getElementById('lngInput').value = lng;
+                    }
+                    
+                    // Обработчик клика по карте
+                    map.on('click', function(e) {
+                        // Если маркер уже существует, удаляем его
+                        if (marker !== null) {
+                            map.removeLayer(marker);
+                        }
+                        
+                        // Создаем новый маркер
+                        marker = L.marker(e.latlng, {draggable: true}).addTo(map)
+                            .bindPopup('Место для озеленения')
+                            .openPopup();
+                            
+                        // Обновляем координаты при создании маркера
+                        updateCoordinates(e.latlng.lat, e.latlng.lng);
+                        
+                        // Обновляем координаты при перетаскивании маркера
+                        marker.on('dragend', function(event) {
+                            const position = marker.getLatLng();
+                            updateCoordinates(position.lat, position.lng);
+                        });
+                    });
+
+                    console.log('Карта инициализирована');
+                } else {
+                    console.error('Leaflet не загружен');
+                    document.getElementById('requestMap').innerHTML = 'Ошибка загрузки карты';
+                }
+            });
+        </script>
+    </div>
+</section>
+{% endblock %}
